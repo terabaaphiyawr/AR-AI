@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+<title>AR AI — by Afan Raza</title>
+<style>
+:root{--bg:#080414;--panel:#140b28;--panel2:#1c1035;--purple:#8b2cff;--violet:#c04dff;--text:#f7f0ff;--muted:#bba9d7;--line:#4a2377}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 75% 0%,#28104b 0,transparent 42%),var(--bg);color:var(--text);font:15px Inter,system-ui,Arial,sans-serif;min-height:100vh}
+.app{display:grid;grid-template-columns:260px 1fr;min-height:100vh}.side{background:linear-gradient(180deg,#160a2b,#0c0619);border-right:1px solid var(--line);padding:22px 16px;display:flex;flex-direction:column}
+.brand{text-align:center;padding:12px 4px 25px}.logo{width:92px;height:92px;border:2px solid var(--violet);border-radius:50%;display:grid;place-items:center;margin:auto auto 12px;font-weight:900;font-size:30px;letter-spacing:-4px;color:white;text-shadow:0 0 18px #bd5cff;box-shadow:0 0 25px #8b2cff}.brand h1{margin:0;font-size:27px}.brand h1 span{color:#bd54ff}.tag{color:var(--muted);font-size:12px;margin-top:6px}.credit{margin-top:12px;color:#d8baff;font-size:13px}
+button{cursor:pointer;border:1px solid var(--line);background:transparent;color:var(--text);border-radius:12px;padding:12px;font:inherit}.new{background:linear-gradient(100deg,#7020db,#9b30ff);border:0;font-weight:700;margin-bottom:15px}.nav button{width:100%;text-align:left;margin:3px 0;color:#d5c4ef}.nav button:hover,.nav button.active{background:#281345;border-color:#7936bb}
+.sidebottom{margin-top:auto;color:#bba9d7;font-size:12px;text-align:center;padding-top:24px}
+.main{display:flex;flex-direction:column;min-width:0}.top{height:72px;border-bottom:1px solid #321650;display:flex;align-items:center;justify-content:space-between;padding:0 28px;background:#0c0619cc}.online{color:#bba9d7}.online:before{content:"";display:inline-block;width:8px;height:8px;background:#39d98a;border-radius:50%;margin-right:9px}
+.content{width:min(1100px,100%);margin:auto;padding:35px 28px 20px;flex:1}.hero{text-align:center;padding:25px 10px 28px}.crown{font-size:28px}.hero h2{font-size:clamp(38px,7vw,68px);margin:7px 0;background:linear-gradient(90deg,#fff,#c45aff);color:transparent;background-clip:text;letter-spacing:-2px}.hero p{color:#d7c1f3;font-size:19px;margin:8px}.by{display:inline-block;border:1px solid #9236e7;border-radius:30px;padding:8px 18px;margin-top:12px;color:#e5caff;box-shadow:0 0 18px #6522a866}
+.features{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:20px 0 25px}.feature{background:linear-gradient(145deg,#211238,#120a20);border:1px solid #4b2673;border-radius:16px;padding:17px 10px;text-align:center;color:#e9dcff}.feature b{display:block;margin-bottom:5px}.feature span{font-size:12px;color:#bba9d7}
+.chat{background:#1a1030;border:1px solid #38205a;border-radius:18px;padding:18px 20px;min-height:90px;line-height:1.6;color:#eee3ff}.chat strong{color:#fff}.chat .welcome{color:#c9b4e8}
+.composer{display:flex;gap:10px;margin-top:22px;padding:9px;border:1px solid #8c35e7;border-radius:30px;box-shadow:0 0 20px #7b2ddd55;background:#120a20}.composer input{flex:1;min-width:0;background:transparent;border:0;outline:0;color:white;padding:10px 12px;font-size:16px}.send{background:linear-gradient(135deg,#8c25f5,#bd40ff);border:0;border-radius:50%;width:48px;height:48px;font-size:20px}
+.hint{text-align:center;color:#806b9e;font-size:12px;margin:12px}
+@media(max-width:720px){.app{grid-template-columns:1fr}.side{display:flex;position:fixed;top:0;left:0;width:260px;height:100vh;z-index:1000;transform:translateX(-100%);transition:transform .25s ease;overflow-y:auto}.side.open{transform:translateX(0)}.menu-toggle{display:block}.top{height:58px;padding:0 16px}.content{padding:20px 14px}.features{grid-template-columns:repeat(2,1fr)}.hero{padding:16px 4px}.hero p{font-size:16px}}
+
+.chat h1,.chat h2,.chat h3{color:#fff;line-height:1.35;margin:18px 0 10px}
+.chat h1{font-size:1.6em}.chat h2{font-size:1.4em}.chat h3{font-size:1.2em}
+.chat p{margin:10px 0}.chat ul,.chat ol{padding-left:25px;margin:10px 0}
+.chat li{margin:5px 0}.chat strong{color:#fff;font-weight:750}
+.chat em{color:#dfc5ff}.chat blockquote{border-left:3px solid #a64aff;padding-left:13px;color:#d0b9ed;margin:12px 0}
+.chat pre{background:#090512;border:1px solid #573080;border-radius:12px;padding:14px;overflow-x:auto}
+.chat code{background:#302047;padding:2px 5px;border-radius:5px;color:#e4baff}
+.chat pre code{background:none;padding:0}
+.chat table{border-collapse:collapse;width:100%;margin:12px 0;display:block;overflow-x:auto}
+.chat th,.chat td{border:1px solid #69418c;padding:8px;text-align:left}
+.chat th{background:#35204e}.chat a{color:#d69bff;text-decoration:underline}
+.chat hr{border:0;border-top:1px solid #69418c;margin:16px 0}
+
+/* AR AI PREMIUM REDESIGN */
+:root{
+ --bg:#0d0e13;--panel:#15161d;--panel2:#20212a;
+ --purple:#8b5cf6;--violet:#a78bfa;
+ --text:#f5f5f7;--muted:#a1a1aa;--line:#30313b;
+}
+body{background:var(--bg);color:var(--text)}
+.app{grid-template-columns:250px 1fr}
+.side{background:#121319;border-color:var(--line);padding:22px 16px}
+.brand{padding:8px 4px 24px}
+.logo img{width:100%;height:100%;object-fit:contain;border-radius:inherit;display:block}.logo{overflow:hidden;width:68px;height:68px;border-radius:19px;
+ border:1px solid #8b5cf6;background:#171520;
+ box-shadow:0 0 18px #8b5cf633;font-size:27px;
+ text-shadow:none;letter-spacing:-4px}
+.brand h1{font-size:24px}
+.tag{font-size:12px;color:#a1a1aa}
+.credit{font-size:12px;color:#c4b5fd}
+.new{background:#7950d9;border-radius:12px}
+.nav button{border-color:transparent;color:#c4c4ce}
+.nav button:hover,.nav button.active{background:#24212f;border-color:#51406e}
+.top{height:76px;padding:0 26px;background:#111218;border-color:var(--line);position:sticky;top:0;z-index:900;flex-shrink:0}
+.top b{font-size:18px}
+.creator{display:flex;align-items:center;gap:10px}
+.creator-icon{font-size:23px;color:#a78bfa}
+.creator-name{font-weight:700;font-size:14px}
+.creator-role{font-size:11px;color:#b9a2ef;margin-top:3px}
+.content{width:min(900px,100%);padding:25px 24px 18px}
+.hero{padding:18px 8px}
+.hero h2{font-size:clamp(42px,7vw,54px);font-weight:850;letter-spacing:-1.5px;background:linear-gradient(100deg,#e9d5ff,#a78bfa,#d8b4fe);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;text-shadow:0 0 22px #a78bfa44;font-family:Arial,sans-serif}
+.hero p{font-size:16px;color:var(--muted)}
+.by{display:none}
+.features{grid-template-columns:repeat(2,1fr);gap:10px}
+.feature{background:#171820;border:1px solid #30313b;border-radius:13px;padding:14px}
+.chat{background:#20212a;border:1px solid #30313b;border-radius:17px;padding:15px 17px;color:#f4f4f5}
+.message-row{display:flex;width:100%;margin:14px 0;gap:9px;align-items:flex-end}
+.message-row.user{justify-content:flex-end}
+.message-row.assistant{justify-content:flex-start}
+.message-bubble{max-width:min(78%,650px);padding:12px 16px;border-radius:17px;line-height:1.6;overflow-wrap:anywhere}
+.message-row.user .message-bubble{background:#39275b;border:1px solid #59417f;border-bottom-right-radius:5px}
+.message-row.assistant .message-bubble{background:#20212a;border:1px solid #30313b;border-bottom-left-radius:5px}
+.message-label{display:block;font-size:12px;font-weight:700;margin-bottom:5px;color:#c4a5fd}
+.message-avatar{overflow:hidden;width:34px;height:34px;flex:0 0 34px;border-radius:50%;display:grid;place-items:center;background:#292334;color:#c4a5fd;border:1px solid #7251a5;font-weight:800;font-size:12px}
+.composer{background:#171820;border:1px solid #393443;box-shadow:none;border-radius:17px}
+.composer input{color:white}
+.send{background:#7950d9;border-radius:12px}
+.hint{color:#777784}
+.message-avatar img{width:100%;height:100%;object-fit:contain;border-radius:50%;display:block}.menu-toggle{display:none}
+#historyList button{background:#191a22;border-color:#30313b}
+.chat pre{background:#111218;border-color:#393443}
+.chat code{background:#302a3c;color:#decaff}
+@media(max-width:720px){
+ .app{grid-template-columns:1fr}
+ .side{width:270px;background:#121319}
+ .menu-toggle{display:block}
+ .top{height:62px;padding:0 14px}
+ .top b{font-size:15px}
+ .creator{gap:6px}
+ .creator-name{font-size:12px}
+ .creator-role{font-size:10px}
+ .creator-icon{font-size:19px}
+ .content{padding:16px 12px}
+ .hero{padding:12px 4px}
+ .features{grid-template-columns:repeat(2,1fr)}
+ .message-bubble{max-width:86%;padding:11px 13px}
+}
+
+.composer{position:sticky;bottom:8px;z-index:50}
+.hero-logo{width:100px;height:100px;margin:0 auto 14px;border-radius:24px;overflow:hidden;box-shadow:0 0 25px #8b5cf644}.hero-logo img{width:100%;height:100%;object-fit:contain;display:block}
+
+/* AR AI WELCOME HEADING */
+#messages > .chat > strong:first-child{display:inline-block;font-size:30px;font-weight:900;font-family:Georgia,serif;letter-spacing:1px;background:linear-gradient(90deg,#d8b4fe,#8b5cf6,#f0abfc);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;text-shadow:0 0 18px #a78bfa55;margin-bottom:8px}
+
+/* AR AI generation button */
+.ar-stop-btn{background:#39275b;color:#fff;border:1px solid #7950d9;border-radius:10px;padding:10px 12px;font-weight:700;cursor:pointer;white-space:nowrap}
+.ar-stop-btn[hidden]{display:none}
+
+.message-menu{position:fixed;z-index:2000;display:none;min-width:180px;padding:7px;background:#191820;border:1px solid #51406e;border-radius:13px;box-shadow:0 12px 35px #0009}
+.message-menu.open{display:block}
+.message-menu button{display:block;width:100%;padding:11px 13px;border:0;border-radius:8px;background:transparent;color:#f5f5f7;text-align:left;font-size:14px}
+.message-menu button:active,.message-menu button:hover{background:#302640}
+.message-menu button.danger{color:#ff9b9b}
+
+
+
+.message-bubble {
+    font-size: 18px;
+    line-height: 1.7;
+}
+.message-bubble h1, .message-bubble h2, .message-bubble h3 {
+    line-height: 1.4;
+    margin: 18px 0 10px;
+    color: #ffffff;
+}
+.message-bubble table {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+    border-collapse: collapse;
+}
+.message-bubble th, .message-bubble td {
+    padding: 8px 10px;
+    border: 1px solid #51406e;
+    text-align: left;
+}
+.message-bubble pre { overflow-x: auto; }
+
+
+/* AR AI full-width response layout */
+.message-row.assistant {
+    align-items: flex-start;
+    width: 100%;
+}
+.message-row.assistant .message-bubble {
+    flex: 1;
+    width: 100%;
+    max-width: 100%;
+    padding: 0;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    font-size: 18px;
+    line-height: 1.7;
+}
+
+/* Keep long Markdown tables inside their own scroll area */
+.message-bubble {
+    min-width: 0;
+    overflow-x: clip;
+}
+.message-bubble table {
+    display: block;
+    width: max-content;
+    min-width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    touch-action: pan-x;
+    border-collapse: collapse;
+    white-space: nowrap;
+}
+.message-bubble th,
+.message-bubble td {
+    padding: 9px 12px;
+    border: 1px solid #51406e;
+    text-align: left;
+}
+.message-bubble pre {
+    max-width: 100%;
+    overflow-x: auto;
+}
+
+
+/* Align AR AI replies closer to the left edge */
+#messages > .message-row.assistant {
+    margin-left: 0;
+    margin-right: 0;
+    gap: 7px;
+}
+#messages > .message-row.assistant .message-avatar {
+    margin-left: 0;
+    flex-shrink: 0;
+}
+#messages > .message-row.assistant .message-bubble {
+    margin-left: 0;
+    text-align: left;
+}
+
+
+/* ChatGPT-style left aligned AI response */
+#messages > .message-row.assistant {
+    display: flex;
+    justify-content: flex-start;
+    gap: 0;
+    width: 100%;
+    margin-left: 0;
+    padding-left: 0;
+}
+#messages > .message-row.assistant .message-avatar {
+    display: grid;
+    flex-shrink: 0;
+}
+#messages > .message-row.assistant .message-bubble {
+    flex: 1;
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+    text-align: left;
+}
+
+
+/* Smooth table scrolling on Android */
+.message-bubble table {
+    touch-action: pan-x pan-y;
+    -webkit-overflow-scrolling: touch;
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+
+/* Clean ChatGPT-style replies: hide assistant avatar and name */
+#messages > .message-row.assistant .message-avatar,
+#messages > .message-row.assistant .message-label,
+#messages > .message-row.assistant .message-bubble > strong:first-child {
+    display: none !important;
+}
+
+
+.composer.keyboard-fixed{
+  position:fixed!important;
+  left:12px!important;
+  right:12px!important;
+  margin:0!important;
+  z-index:950!important;
+  bottom:0!important;
+}
+body.keyboard-open .hint{display:none}
+
+
+/* ChatGPT-style mobile fixed composer */
+@media(max-width:720px){
+  .composer,
+  .composer.keyboard-fixed{
+    position:fixed!important;
+    left:12px!important;
+    right:12px!important;
+    bottom:env(safe-area-inset-bottom, 0px)!important;
+    width:auto!important;
+    margin:0!important;
+    z-index:950!important;
+    border-radius:26px!important;
+    background:#202123!important;
+    border:1px solid #45464b!important;
+    box-shadow:0 4px 18px #0005!important;
+  }
+  .content{
+    padding-bottom:105px!important;
+  }
+}
+
+
+/* Disable browser selection on long press; Select menu action enables it */
+.message-bubble {
+    -webkit-user-select: none !important;
+    user-select: none !important;
+    -webkit-touch-callout: none !important;
+}
+\n</style></head>
+<body><div class="app">
+<aside class="side"><button onclick="toggleSidebar()" style="align-self:flex-end;margin-bottom:8px">✕ Close</button><div class="brand"><div class="logo"><img src="/static/ar_ai_logo.png" alt="AR AI Logo"></div><h1>AR <span>AI</span></h1><div class="tag">Your AI. Your Way. ✨</div><div class="credit">Created & developed by<br><b>Afan Raza</b></div></div>
+<button class="new" onclick="newChat()">＋ &nbsp; New Chat</button><nav class="nav"><button class="active">◷ &nbsp; Chat</button><button onclick="showHistory()">◴ &nbsp; Chat History</button><button onclick="alert('Profile settings coming soon.')">♙ &nbsp; My Profile</button><button onclick="alert('More settings coming soon.')">⚙ &nbsp; Settings</button><button onclick="alert('AR AI is your personal AI assistant, created by Afan Raza.')">ⓘ &nbsp; About AR AI</button></nav><div id="historyList"></div><div class="sidebottom">© 2026 AR AI<br>Made with ♥ by Afan Raza</div></aside>
+<main class="main"><header class="top"><button class="menu-toggle" onclick="toggleSidebar()">☰</button><b>✦ AR AI Assistant</b><div class="creator">
+<div><div class="creator-name">AFAN RAZA</div>
+<div class="creator-role">CREATOR &amp; DEVELOPER</div></div>
+<div class="creator-icon">✦</div>
+</div></header>
+<section class="content"><div class="hero"><div class="hero-logo"><img src="/static/ar_ai_logo.png" alt="AR AI Logo"></div><h2>Welcome to AR AI</h2><p>Your AI. Your Way. ✨</p><div class="by">✦ &nbsp; by Afan Raza</div><p style="font-size:15px;margin-top:18px">Your personal AI assistant for ideas, answers, learning, and everyday tasks.</p></div>
+<div class="features"><div class="feature"><b>✧ AI Chat</b><span>Smart & helpful</span></div><div class="feature"><b>♬ Voice Assistant</b><span>Coming soon</span></div><div class="feature"><b>▧ Image Analysis</b><span>Coming soon</span></div><div class="feature"><b>⌘ Code Helper</b><span>Write & debug</span></div></div>
+<div id="messages"><div class="chat"><strong>AR AI 👋</strong><br><strong>Hello! I am AR AI, your personal AI assistant. How can I help you today?</strong></div></div>
+<form class="composer" onsubmit="sendMessage(event)"><input id="msg" autocomplete="off" placeholder="Ask AR AI anything..." required><button type="button" id="generationControl" class="ar-stop-btn" hidden>■ Stop</button><button class="send" aria-label="Send">➤</button></form><div class="hint">AR AI can make mistakes. Check important information.</div></section></main></div>
+<div id="messageMenu" class="message-menu" role="menu" aria-label="Message actions"></div>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js">
+
+
+
+
+</script>
+<script src="https://cdn.jsdelivr.net/npm/dompurify/dist/purify.min.js">
+
+</script>
+<script>
+let chatHistory=[];
+let beastMode=localStorage.getItem("ar_ai_beast_mode")==="true";
+let savedChats=JSON.parse(localStorage.getItem('ar_ai_chats')||'[]');
+let currentChatId=null;
+let activeController=null;
+
+let menuMessageIndex=-1;
+let menuMessageRole='';
+function closeMessageMenu(){
+ const menu=document.getElementById('messageMenu');
+ menu.classList.remove('open');
+ menu.innerHTML='';
+}
+function openMessageMenu(x,y,index,role){
+ const menu=document.getElementById('messageMenu');
+ menuMessageIndex=index;
+ menuMessageRole=role;
+ menu.innerHTML='';
+ const actions=role==='user' ? ['Select','Copy','Edit'] : ['Select','Copy'];
+ actions.forEach(action=>{
+  const btn=document.createElement('button');
+  btn.textContent=action;
+  btn.type='button';
+  btn.onclick=()=>handleMessageAction(action,index,role);
+  menu.appendChild(btn);
+ });
+ menu.classList.add('open');
+ const left=Math.max(8,Math.min(x,window.innerWidth-195));
+ const top=Math.max(8,Math.min(y,window.innerHeight-menu.offsetHeight-8));
+ menu.style.left=left+'px';
+ menu.style.top=top+'px';
+}
+
+
+function saveChats(){
+ localStorage.setItem('ar_ai_chats',JSON.stringify(savedChats));
+}
+
+function makeChatTitle(text){
+ const words=text.trim().replace(/\\s+/g,' ').split(' ');
+ let title=words.slice(0,6).join(' ');
+ if(title.length>38)title=title.slice(0,35).trim()+'...';
+ return title.charAt(0).toUpperCase()+title.slice(1);
+}
+function saveCurrentChat(){
+ if(!chatHistory.length)return;
+ const id=currentChatId||String(Date.now());
+ currentChatId=id;
+ const first=chatHistory.find(m=>m.role==='user');
+ const title=first?makeChatTitle(first.text):'New Chat';
+ const chat={id,title,messages:chatHistory};
+ const index=savedChats.findIndex(c=>c.id===id);
+ if(index>=0)savedChats[index]=chat;
+ else savedChats.unshift(chat);
+ saveChats();
+}
+async function sendMessage(e){
+ e.preventDefault();
+ const input=document.getElementById('msg');
+ const text=input.value.trim();
+ if(!text)return;
+ const command=text.toLowerCase();
+ if(command==="activate your beast mode"){beastMode=true;localStorage.setItem("ar_ai_beast_mode","true");}
+ else if(command==="deactivate your beast mode"){beastMode=false;localStorage.setItem("ar_ai_beast_mode","false");}
+
+ const box=document.getElementById('messages');
+ const userRow=document.createElement('div');
+ userRow.className='message-row user';
+ userRow.innerHTML='<div class="message-bubble"><span class="message-label">You</span>'+escapeHtml(text)+'</div>';
+ box.appendChild(userRow);
+ input.value='';
+
+ const waitRow=document.createElement('div');
+ waitRow.className='message-row assistant';
+ const avatar=document.createElement('div');
+ avatar.className='message-avatar';
+ avatar.innerHTML='<img src="/static/ar_ai_logo.png" alt="AR AI">';
+ const wait=document.createElement('div');
+ wait.className='message-bubble';
+ wait.innerHTML='<span class="message-label" style="margin-bottom:10px">AR AI</span>';
+ waitRow.append(avatar,wait);
+ box.appendChild(waitRow);
+ wait.style.whiteSpace='pre-wrap';
+
+ const output=document.createTextNode('AR AI is thinking…');
+ wait.appendChild(output);
+ const stopBtn=document.getElementById('generationControl');
+ stopBtn.hidden=false;
+ stopBtn.disabled=false;
+ stopBtn.textContent='■ Stop';
+ stopBtn.onclick=()=>{if(activeController)activeController.abort();};
+ let replyStarted=false;
+ let replyText='';
+
+ try{
+  activeController=new AbortController();
+ const r=await fetch('/api/chat',{
+   method:'POST',
+   headers:{'Content-Type':'application/json'},
+   body:JSON.stringify({message:text,history:chatHistory,beastMode:beastMode}),
+ signal:activeController.signal
+  });
+
+  if(!r.ok){
+   const data=await r.json();
+   throw new Error(data.detail||'API request failed');
+  }
+
+  if(!r.body)throw new Error('Streaming supported nahi hai.');
+
+  const reader=r.body.getReader();
+  const decoder=new TextDecoder();
+  let buffer='';
+
+  while(true){
+   const {value,done}=await reader.read();
+   if(done)break;
+
+   buffer+=decoder.decode(value,{stream:true});
+   const lines=buffer.split('\n');
+   buffer=lines.pop();
+
+   for(const line of lines){
+    if(!line.trim())continue;
+    const data=JSON.parse(line);
+
+    if(data.error)throw new Error(data.error);
+
+    if(data.text){
+     if(!replyStarted){
+      output.textContent='';
+      replyStarted=true;
+     }
+     replyText+=data.text;
+     output.textContent=replyText;
+     window.scrollTo(0,document.body.scrollHeight);
+    }
+   }
+  }
+
+  buffer+=decoder.decode();
+  if(buffer.trim()){
+   const data=JSON.parse(buffer);
+   if(data.error)throw new Error(data.error);
+   if(data.text){
+    if(!replyStarted)output.textContent='';
+    replyText+=data.text;
+     output.textContent=replyText;
+    replyStarted=true;
+   }
+  }
+
+  if(!replyStarted)output.textContent='Mujhe is baar response nahi mila. Dobara try karo.';
+  else {
+   chatHistory.push({role:'user',text:text});
+   chatHistory.push({role:'model',text:replyText});
+   saveCurrentChat();
+   wait.innerHTML='<strong>AR AI</strong><br>'+DOMPurify.sanitize(marked.parse(replyText));
+  }
+  stopBtn.hidden=true;
+ }catch(err){
+  if(err.name==='AbortError'){
+   output.textContent=replyText ? replyText+'\n\n[Generation stopped]' : 'Generation stopped.';
+   if(replyText){
+    chatHistory.push({role:'user',text:text});
+    chatHistory.push({role:'model',text:replyText});
+    saveCurrentChat();
+   }
+   stopBtn.disabled=false;
+   stopBtn.textContent='▶ Resume';
+
+   const resumeResponse=async()=>{
+    stopBtn.disabled=true;
+    stopBtn.textContent='Resuming...';
+
+    let extra='';
+    try{
+     activeController=new AbortController();
+     stopBtn.onclick=()=>{if(activeController)activeController.abort();};
+
+     const r=await fetch('/api/chat',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+       message:'Continue the answer to this question exactly where it stopped. Do not repeat the completed part.\n\nOriginal question:\n'+text+'\n\nAnswer already written:\n'+replyText,
+       history:chatHistory.slice(0,-2),
+       beastMode:beastMode
+      }),
+      signal:activeController.signal
+     });
+
+     if(!r.ok){
+      const data=await r.json();
+      throw new Error(data.detail||'API request failed');
+     }
+
+     const reader=r.body.getReader();
+     const decoder=new TextDecoder();
+     let buffer='';
+
+     while(true){
+      const result=await reader.read();
+      if(result.done)break;
+      buffer+=decoder.decode(result.value,{stream:true});
+      const lines=buffer.split('\n');
+      buffer=lines.pop();
+
+      for(const line of lines){
+       if(!line.trim())continue;
+       const data=JSON.parse(line);
+       if(data.error)throw new Error(data.error);
+       if(data.text){
+        extra+=data.text;
+        output.textContent=replyText+extra;
+        box.scrollTop=box.scrollHeight;
+       }
+      }
+     }
+
+     buffer+=decoder.decode();
+     if(buffer.trim()){
+      const data=JSON.parse(buffer);
+      if(data.error)throw new Error(data.error);
+      if(data.text)extra+=data.text;
+     }
+
+     replyText+=extra;
+     if(chatHistory.length && chatHistory[chatHistory.length-1].role==='model'){
+      chatHistory[chatHistory.length-1].text=replyText;
+     }
+     saveCurrentChat();
+     wait.innerHTML='<strong>AR AI</strong><br>'+DOMPurify.sanitize(marked.parse(replyText));
+     stopBtn.hidden=true;
+
+    }catch(resumeErr){
+     replyText+=extra;
+     output.textContent=replyText+(resumeErr.name==='AbortError' ? '\n\n[Generation stopped]' : '\n\n[Error: '+resumeErr.message+']');
+
+     if(chatHistory.length && chatHistory[chatHistory.length-1].role==='model'){
+      chatHistory[chatHistory.length-1].text=replyText;
+      saveCurrentChat();
+     }
+
+     if(resumeErr.name==='AbortError'){
+      stopBtn.disabled=false;
+      stopBtn.textContent='▶ Resume';
+      stopBtn.onclick=resumeResponse;
+     }else{
+      stopBtn.hidden=true;
+     }
+    }finally{
+     activeController=null;
+    }
+   };
+
+   stopBtn.onclick=resumeResponse;
+  }else{
+  output.textContent=replyStarted
+   ? output.textContent+'\n\n[Error: '+err.message+']'
+   : 'Error: '+err.message;
+  }
+ }
+ activeController=null;
+ window.scrollTo(0,document.body.scrollHeight);
+}
+
+
+
+async function handleMessageAction(action,index,role){
+ closeMessageMenu();
+ const item=chatHistory[index];
+ if(!item)return;
+
+ if(action==='Copy'){
+  try{
+   const selectedText=window.getSelection()?.toString().trim();
+     await navigator.clipboard.writeText(selectedText || item.text);
+   alert('Message copied!');
+  }catch(err){
+   alert('Copy failed. Please select the text manually.');
+  }
+  return;
+ }
+
+ if(action==='Select'){
+  const rows=[...document.querySelectorAll('#messages .message-row')];
+  const row=rows[index];
+  const bubble=row?.querySelector('.message-bubble');
+  if(bubble){
+   bubble.style.setProperty('-webkit-user-select','text','important');
+   bubble.style.setProperty('user-select','text','important');
+   const selection=window.getSelection();
+   const range=document.createRange();
+   range.selectNodeContents(bubble);
+   selection.removeAllRanges();
+   selection.addRange(range);
+  }
+  return;
+ }
+
+ if(action==='Edit' && role==='user'){
+  const rows=[...document.querySelectorAll('#messages .message-row')];
+  const row=rows[index];
+  if(!row)return;
+
+  const bubble=row.querySelector('.message-bubble');
+  if(!bubble)return;
+
+  bubble.innerHTML='';
+  const editor=document.createElement('textarea');
+  editor.value=item.text;
+  editor.rows=4;
+  editor.style.cssText='width:100%;min-height:90px;resize:vertical;padding:10px;background:#111218;color:white;border:1px solid #7950d9;border-radius:10px;font:inherit;box-sizing:border-box';
+
+  const controls=document.createElement('div');
+  controls.style.cssText='display:flex;gap:8px;margin-top:10px';
+
+  const save=document.createElement('button');
+  save.type='button';
+  save.textContent='Save & Regenerate';
+  save.style.cssText='padding:9px 12px;background:#7950d9;color:white;border:0;border-radius:9px';
+
+  const cancel=document.createElement('button');
+  cancel.type='button';
+  cancel.textContent='Cancel';
+  cancel.style.cssText='padding:9px 12px;background:#30313b;color:white;border:0;border-radius:9px';
+
+  controls.append(save,cancel);
+  bubble.append(editor,controls);
+  editor.focus();
+
+  cancel.onclick=()=>{
+   bubble.innerHTML='<span class="message-label">You</span>'+escapeHtml(item.text);
+  };
+
+  save.onclick=()=>{
+   const edited=editor.value.trim();
+   if(!edited){
+    alert('Message cannot be empty.');
+    return;
+   }
+
+   chatHistory=chatHistory.slice(0,index);
+   rows.slice(index).forEach(r=>r.remove());
+   saveCurrentChat();
+
+   const input=document.getElementById('msg');
+   input.value=edited;
+   document.querySelector('.composer').requestSubmit();
+  };
+ }
+}
+
+
+let messageHoldTimer=null;
+let messageHoldTarget=null;
+function getMessageIndex(row){
+ const rows=[...document.querySelectorAll('#messages .message-row')];
+ return rows.indexOf(row);
+}
+document.addEventListener('pointerdown',e=>{
+ const row=e.target.closest('#messages .message-row');
+ if(!row || e.button!==0)return;
+ clearTimeout(messageHoldTimer);
+ messageHoldTarget=row;
+ messageHoldTimer=setTimeout(()=>{
+  if(window.getSelection().toString())return;
+  const index=getMessageIndex(row);
+  if(index<0)return;
+  const role=row.classList.contains('user')?'user':'model';
+  openMessageMenu(e.clientX,e.clientY,index,role);
+ },600);
+});
+document.addEventListener('pointermove',()=>{
+ clearTimeout(messageHoldTimer);
+});
+document.addEventListener('pointerup',()=>{
+ clearTimeout(messageHoldTimer);
+});
+document.addEventListener('pointercancel',()=>{
+ clearTimeout(messageHoldTimer);
+});
+document.addEventListener('contextmenu',e=>{
+ const row=e.target.closest('#messages .message-row');
+ if(!row)return;
+ e.preventDefault();
+ const index=getMessageIndex(row);
+ if(index<0)return;
+ const role=row.classList.contains('user')?'user':'model';
+ openMessageMenu(e.clientX,e.clientY,index,role);
+});
+document.addEventListener('click',e=>{
+ if(!e.target.closest('#messageMenu'))closeMessageMenu();
+});
+
+function toggleSidebar(){document.querySelector('.side').classList.toggle('open');}
+
+function showHistory(){
+ const list=document.getElementById('historyList');
+ list.innerHTML='';
+ const heading=document.createElement('div');
+ heading.textContent='YOUR CHATS';
+ heading.style.cssText='font-size:11px;color:#bba9d7;margin:18px 8px 8px;font-weight:bold';
+ list.appendChild(heading);
+
+ if(!savedChats.length){
+  const empty=document.createElement('div');
+  empty.textContent='No saved chats yet';
+  empty.style.cssText='font-size:12px;color:#bba9d7;padding:8px';
+  list.appendChild(empty);
+  return;
+ }
+
+ savedChats.forEach(chat=>{
+  const row=document.createElement('div');
+  row.style.cssText='display:flex;gap:5px;align-items:center;margin:4px 0';
+
+  const btn=document.createElement('button');
+  btn.textContent='◷  '+chat.title;
+  btn.style.cssText='flex:1;min-width:0;text-align:left;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap';
+  btn.onclick=()=>{
+   loadChat(chat.id);
+   document.querySelector('.side').classList.remove('open');
+  };
+
+  const del=document.createElement('button');
+  del.textContent='🗑';
+  del.title='Delete chat';
+  del.style.cssText='flex:0 0 38px;width:38px;padding:9px 4px;color:#ff8585;background:#29202a;border:1px solid #59404b;border-radius:8px';
+  del.onclick=()=>{
+   if(!confirm('Delete this chat permanently?'))return;
+   savedChats=savedChats.filter(c=>c.id!==chat.id);
+   if(currentChatId===chat.id){
+    currentChatId=null;
+    chatHistory=[];
+    document.getElementById('messages').innerHTML='<div class="chat"><strong>AR AI 👋</strong><br>New chat shuru! Batao, aaj kya poochhna hai? 💜</div>';
+   }
+   saveChats();
+   showHistory();
+  };
+
+  row.append(btn,del);
+  list.appendChild(row);
+ });
+}
+function loadChat(id){
+ const chat=savedChats.find(c=>c.id===id);
+ if(!chat)return;
+
+ currentChatId=id;
+ chatHistory=chat.messages.map(m=>({...m}));
+
+ const box=document.getElementById('messages');
+ box.innerHTML='';
+
+ chatHistory.forEach(m=>{
+  const row=document.createElement('div');
+  row.className='message-row '+(m.role==='user'?'user':'assistant');
+
+  if(m.role==='user'){
+   const bubble=document.createElement('div');
+   bubble.className='message-bubble';
+   const label=document.createElement('span');
+   label.className='message-label';
+   label.textContent='You';
+   bubble.append(label,document.createTextNode(m.text));
+   row.appendChild(bubble);
+  }else{
+   const avatar=document.createElement('div');
+   avatar.className='message-avatar';
+   avatar.innerHTML='<img src="/static/ar_ai_logo.png" alt="AR AI">';
+
+   const bubble=document.createElement('div');
+   bubble.className='message-bubble';
+   bubble.innerHTML='<strong style="display:block;margin-bottom:10px">AR AI</strong>'+DOMPurify.sanitize(marked.parse(m.text));
+
+   row.append(avatar,bubble);
+  }
+
+  box.appendChild(row);
+ });
+
+ window.scrollTo(0,document.body.scrollHeight);
+}
+function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function newChat(){document.querySelector('.side').classList.remove('open');currentChatId=null;chatHistory=[];document.getElementById('messages').innerHTML='<div class="chat"><strong>AR AI 👋</strong><br>New chat shuru! Batao, aaj kya poochhna hai? 💜</div>';}
+showHistory();
+
+let arTouchStartX=0,arTouchStartY=0;
+document.addEventListener("touchstart",e=>{arTouchStartX=e.touches[0].clientX;arTouchStartY=e.touches[0].clientY},{passive:true});
+document.addEventListener("touchend",e=>{let dx=e.changedTouches[0].clientX-arTouchStartX;let dy=e.changedTouches[0].clientY-arTouchStartY;let side=document.querySelector(".side");if(Math.abs(dx)>70&&Math.abs(dx)>Math.abs(dy)){if(arTouchStartX<60&&dx>0)side.classList.add("open");else if(side.classList.contains("open")&&dx<0)side.classList.remove("open")}},{passive:true});
+document.addEventListener("click",e=>{let side=document.querySelector(".side");if(side.classList.contains("open")&&side.contains(e.target)===false&&e.target.closest(".menu-toggle")===null)side.classList.remove("open")});
+
+
+</script>
+</body></html>
